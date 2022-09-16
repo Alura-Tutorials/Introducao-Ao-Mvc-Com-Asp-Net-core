@@ -4,6 +4,7 @@ using System.Text;
 using Alura.ListaLeitura.App.Negocio;
 using System.IO;
 using System.Linq;
+using File = System.IO.File;
 
 namespace Alura.ListaLeitura.App.Repositorio
 {
@@ -67,11 +68,23 @@ namespace Alura.ListaLeitura.App.Repositorio
 
         public void Incluir(Livro livro)
         {
-            var id = Todos.Select(l => l.Id).Max();
-            using (var file = File.AppendText(LivroRepositorioCSV.nomeArquivoCSV))
+            using (StreamWriter sw = new StreamWriter(nomeArquivoCSV, true))
+
             {
-                file.WriteLine($"para-ler;{id+1};{livro.Titulo};{livro.Autor}");
+                var id = Todos.Select(l => l.Id).Max() + 1;
+                Console.WriteLine($"Incluindo {livro} with id= {id}");
+                try
+                {
+                    sw.WriteLine($"para-ler;{id};{livro.Titulo};{livro.Autor}");
+                    sw.Flush();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
             }
+
         }
     }
 }
